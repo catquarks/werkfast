@@ -6,9 +6,10 @@ require 'pry'
 
 require_relative './lib/gmail_handler'
 require_relative './lib/file_parser'
+require_relative './lib/cli_helper'
 
-# VIVIAL_PATH = "/home/tami/Dropbox/LocalVox"
-VIVIAL_PATH = "/tmp"
+
+VIVIAL_PATH = "/home/tami/Dropbox/LocalVox"
 OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'
 APPLICATION_NAME = 'Werkfast'
 CLIENT_SECRETS_PATH = 'client_secret.json'
