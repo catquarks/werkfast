@@ -28,11 +28,11 @@ class GmailHandler
     credentials
   end
 
-  def query_gmail_api
+  def query_gmail_api(emails_to_query)
     service = Google::Apis::GmailV1::GmailService.new
     service.client_options.application_name = APPLICATION_NAME
     service.authorization = authorize
-    initial_query = service.list_user_messages(user_id, include_spam_trash: nil, label_ids: nil, max_results: emails_to_query, q: "from:vivial.net is:unread").messages
+    initial_query = service.list_user_messages(user_id, include_spam_trash: nil, label_ids: nil, max_results: emails_to_query, q: "from:content@vivial.net is:unread").messages
     email_ids = initial_query.map {|email| email.id}
     raw_messages = email_ids.map {|id| service.get_user_message(user_id, id)}
     return raw_messages
