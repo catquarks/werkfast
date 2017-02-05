@@ -4,7 +4,7 @@ module EmailScrape
     email.payload.headers.find {|header| header.name == "Subject"}.value
   end
 
-  def EmailScrape.get_assignment_body(email)
+  def EmailScrape.get_email_body(email)
     email.payload.parts[1].body.data
   end
 

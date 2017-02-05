@@ -15,7 +15,7 @@ class FileParser
 end
 
 class Assignment
-  attr_reader :client_name, :due_date
+  attr_reader :client_name, :due_date, :assignment_body, :keywords
   @@word_substitutions = {
     "&": "and",
     "%": "percent",
@@ -40,6 +40,10 @@ class Assignment
     subject = EmailScrape.get_email_subject(raw_email)
     @client_name = get_client_name_from_email_subject(subject)
     @due_date = get_due_date_from_email_subject(subject)
+    raw_assignment_body = EmailScrape.get_email_body(raw_email)
+    @assignment_body = Nokogiri::HTML(raw_assignment_body)
+    get_assignment_keywords
+
 
     filename = create_filename
     odt_file = File.open("#{VIVIAL_PATH}/#{filename}.odt", "w")
@@ -91,27 +95,27 @@ class Assignment
     end
   end
 
-  def get_assignment_keywords(assignment_body)
-    "<p>" + assignment_body.match(/Keywords:[\s\S]*()<\/span>\s*<\/p>/)[0].gsub("Keywords: ", "")
+  def get_assignment_keywords
+    @keywords = assignment_body.css('span').text
   end
 
-  def create_assignment_header(keywords, assignment_body)
-    "<html><body>" + assignment_body.match(/.*/)[0] + keywords
-  end
+  # def create_assignment_header
+  #   "<html><body>" + assignment_body.match(/.*/)[0] + keywords
+  # end
 
-  def parse_assignment_body(raw_data)
-    raw_data.match(/Article Topic and Information: <\/b><\/font>\s<br \/>([\s\S]*)/)[1].gsub(/<script>[\s\S]*<\/script>/, "")
+  def parse_assignment_body
+    # binding.pry
+    assignment_body.to_html
+    # assignment_body.match(/Article Topic and Information: <\/b><\/font>\s<br \/>([\s\S]*)/)[1].gsub(/<script>[\s\S]*<\/script>/, "")
   end
 
   def extract_assignment(email)
-    assignment_body = EmailScrape.get_assignment_body(email)
-    parsed_assignment_body = parse_assignment_body(assignment_body)
-    keywords = get_assignment_keywords(assignment_body)
-    assignment_body.gsub!(keywords, "")
-    header = create_assignment_header(keywords, assignment_body)
-    header.gsub!("<br \/>", "").gsub!("\r" ,"")
+    # parsed_assignment_body = parse_assignment_body
 
-    return header + assignment_body
+    # header = create_assignment_header
+    # header.gsub!("<br \/>", "").gsub!("\r" ,"")
+
+    return keywords
   end
 
 end
