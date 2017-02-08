@@ -4,7 +4,7 @@ class GmailHandler
 
   def initialize(emails_to_query=1)
     @emails_to_query = emails_to_query
-    @user_id = 'me'
+    @user_id = USER_ID
   end
 
   def authorize
@@ -32,9 +32,12 @@ class GmailHandler
     service = Google::Apis::GmailV1::GmailService.new
     service.client_options.application_name = APPLICATION_NAME
     service.authorization = authorize
-    initial_query = service.list_user_messages(user_id, include_spam_trash: nil, label_ids: nil, max_results: emails_to_query, q: "from:content@vivial.net is:unread").messages
+    initial_query = service.list_user_messages(user_id, include_spam_trash: nil, label_ids: nil, max_results: 50, q: SEARCH_PARAMS).messages
+    if initial_query == nil
+      abort "No emails found!"
+    end
     email_ids = initial_query.map {|email| email.id}
-    raw_messages = email_ids.map {|id| service.get_user_message(user_id, id)}
+    raw_messages = email_ids.map {|id| service.get_user_message(user_id, id)}.reverse.take(emails_to_query)
     return raw_messages
   end
 
