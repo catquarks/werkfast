@@ -1,3 +1,5 @@
+require 'nokogiri'
+
 class Assignment
   attr_reader :client_name, :due_date, :assignment_body, :keywords, :word_substitutions, :filename
 
@@ -33,7 +35,6 @@ class Assignment
     assignment = extract_assignment(raw_email)
     odt_file << assignment
     odt_file.close
-    # `cp #{SAVE_PATH}/#{odt_file} #{SAVE_PATH}/#{@filename}.odt`
   end
 
   def get_client_name_from_email_subject(subject)
@@ -79,22 +80,24 @@ class Assignment
   end
 
   def get_assignment_keywords
-    @keywords = assignment_body.css('span').text
+    @keywords = assignment_body.css('span').to_html
+  end
+
+  def parse_assignment_topic
+    topic = assignment_body.css('p')[3..4]
+    topic.css('b')[0].remove
+    topic.css('br')[0].remove
+    topic.to_html
   end
 
   def parse_assignment_body
-    # binding.pry
-    # assignment_body.to_html
-    # assignment_body.match(/Article Topic and Information: <\/b><\/font>\s<br \/>([\s\S]*)/)[1].gsub(/<script>[\s\S]*<\/script>/, "")
+    assignment_body.css('p')[5, 9].to_html
   end
 
   def extract_assignment(email)
-    # parsed_assignment = parse_assignment_body
-
-    # header = create_assignment_header
-    # header.gsub!("<br \/>", "").gsub!("\r" ,"")
-
-    return keywords
+    body = parse_assignment_body
+    topic = parse_assignment_topic
+    return topic + keywords + body
   end
 
 end

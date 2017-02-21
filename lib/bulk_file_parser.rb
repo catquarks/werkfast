@@ -1,4 +1,3 @@
-require 'nokogiri'
 require_relative './assignment'
 
 class BulkFileParser
