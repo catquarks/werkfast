@@ -37,8 +37,8 @@ class GmailHandler
       abort "No emails found!"
     end
     email_ids = initial_query.map {|email| email.id}
-    raw_messages = email_ids.map {|id| service.get_user_message(user_id, id)}.reverse.take(emails_to_query)
-    return raw_messages
+    chronological_messages = email_ids.map {|id| service.get_user_message(user_id, id)}.reverse.take(emails_to_query)
+    return chronological_messages
   end
 
 end
