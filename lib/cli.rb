@@ -59,6 +59,10 @@ module Cli
 				self.get_user_input
 			end
 
+			if self.save_path == "/!blank!/!file!/!path!"
+				self.get_user_input
+			end
+
 			return self.save_path
 		end
 
