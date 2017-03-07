@@ -21,7 +21,9 @@ class Assignment
       "~": "",
       "`": "",
       ":": "-",
-      " ": "-"
+      " ": "-",
+      "\\", " ",
+      "|", "-"
     }
     subject = EmailScrape.get_email_subject(raw_email)
     @client_name = get_client_name_from_email_subject(subject)
